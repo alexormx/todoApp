@@ -81,7 +81,7 @@ class View {
   }
 
   bindSelectCompletedAll(handler) {
-    document.querySelector("#all_done_header").addEventListener("click", handler);
+    document.querySelector("#completed_todos").addEventListener("click", handler);
   }
 
   bindSelectCompletedByGroup(handler) {
@@ -102,7 +102,6 @@ class View {
     dlsComplete.forEach(node => {
       node.classList.remove("active");
     });
-
     document.querySelector("#all_header").classList.remove("active");
     document.querySelector("#all_done_header").classList.remove("active");
     node.classList.add("active");

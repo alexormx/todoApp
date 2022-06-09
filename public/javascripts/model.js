@@ -80,7 +80,6 @@ class Model {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest();
       request.open("DELETE", `/api/todos/${id}`)
-
       request.addEventListener("load", () => {
         if (request.status === 204) {
           resolve(request.response);

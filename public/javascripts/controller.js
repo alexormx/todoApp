@@ -28,7 +28,8 @@ class Controller {
 
   async refreshTodos() {
     model.todos = await model.getAllTodos();
-    
+
+    this.sortAllTodos() 
     this.filteredData.title = this.state.title;
     this.filteredData.data = model.todos;
     this.resetSelect();
@@ -41,13 +42,18 @@ class Controller {
 
   async refreshData() {
     model.todos = await model.getAllTodos();
-    
+
+    this.sortAllTodos() 
     this.filteredData.title = this.state.title;
     this.filteredData.data = model.todos;
     this.resetSelect();
     this.monthYearOptions = this.generateMonthYear();
     this.completed = this.filterCompleted();
     this.completedByMonthYear = this.filterCompletesByMonthYear();
+  }
+
+  sortAllTodos() {
+    model.todos.sort((a,b) => a.completed - b.completed);
   }
 
   renderPage() {
@@ -205,9 +211,11 @@ class Controller {
       }
       let json = JSON.stringify(object);
       if(action === "edit") {
-      model.editTodos(id, json, this.hideModal.bind(this));
+        model.editTodos(id, json, this.hideModal.bind(this));
       } else {
-      model.addTodos(json, this.hideModal.bind(this));
+        this.state.title = "All Todos";
+        this.state.complete = false;
+        model.addTodos(json, this.hideModal.bind(this));
       }
 
     } else if(buttonId === "mark_complete") {
@@ -231,11 +239,15 @@ class Controller {
     return object;
   }
 
-  async hideModal() {
-    await this.refreshData()
+  hideModal() {
     view.hideModalNew();
-    this.renderSelection()
     view.clearForm();
+    this.updateData()
+  }
+
+  async updateData() {
+    await this.refreshData()
+    this.renderSelection()
     view.renderCompleteComp(this.completed, this.completedByMonthYear);
     view.rederAllTodosList(this.monthYearOptions);
   }
@@ -298,13 +310,13 @@ class Controller {
   underLine(id) {
     let node = document.querySelector(`#todos_selection tr[data-id="${id}"] input`);
     node.checked = !node.checked;
-    this.updateCompleted();  
+    this.updateData();
   }
 
   underLineComplete(id) {
     let node = document.querySelector(`#todos_selection tr[data-id="${id}"] input`);
     node.checked = true; 
-    this.updateCompleted();  
+    this.updateData();
   }
 
   async toggleDone(id) {
@@ -326,24 +338,9 @@ class Controller {
 
   async deleteItem(id) {
     let item = await model.deleteTodo(id) 
-    let currentTitle = document.querySelector("#current_title time").textContent;
-    await this.refreshTodos();
-    if(currentTitle !== "All Todos") {
-      let node = document.querySelector(`article dl[data-title="${currentTitle}"]`);
-      view.selectActive(node);
-      this.filteredData.title = currentTitle;
-      this.filteredData.data = this.monthYearOptions[currentTitle];
-      view.renderFiltered(this.filteredData);
-    }
+    this.updateData()
   }
 
-  async updateCompleted() {
-    model.todos =  await model.getAllTodos();
-    this.completed = this.filterCompleted();
-    this.monthYearOptions = this.generateMonthYear();
-    this.completedByMonthYear = this.filterCompletesByMonthYear();
-    view.renderCompleteComp(this.completed, this.completedByMonthYear);
-  }
 
 }
 
