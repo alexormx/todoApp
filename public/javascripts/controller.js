@@ -160,8 +160,8 @@ class Controller {
 
   handleClickAll(event) {
     let currentNode = event.currentTarget;
-    view.selectActive(currentNode);
-
+    view.selectActive(currentNode.firstElementChild);
+    console.log("YOu click ")
     this.state.title = "All Todos";
     this.state.complete = false;
 
@@ -249,7 +249,7 @@ class Controller {
     await this.refreshData()
     this.renderSelection()
     view.renderCompleteComp(this.completed, this.completedByMonthYear);
-    view.rederAllTodosList(this.monthYearOptions);
+    view.rederAllTodosList(this.monthYearOptions, model.todos);
   }
 
   renderSelection() {

@@ -77,7 +77,7 @@ class View {
   }
 
   bindSelectAll(handler) {
-    document.querySelector("#all_header").addEventListener("click", handler);
+    document.querySelector("#all_todos").addEventListener("click", handler);
   }
 
   bindSelectCompletedAll(handler) {
@@ -142,9 +142,12 @@ class View {
     document.querySelector("#completed_lists").innerHTML = completeList;
   }
 
-  rederAllTodosList(todosByDate) {
+  rederAllTodosList(todosByDate, allTodos) {
     let allTodosHtml = this.templates.allListTemplate({todos_by_date: todosByDate});
     document.querySelector("#all_lists").innerHTML = allTodosHtml;
+
+    let titleHtml = this.templates.allTodosTemplate({todos: allTodos});
+    document.querySelector("#all_todos").innerHTML = titleHtml;
   }
 
 }
